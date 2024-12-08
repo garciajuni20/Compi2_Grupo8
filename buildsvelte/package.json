@@ -3,9 +3,9 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"predev":"npm run compilde",
+		"predev": "npm run compile",
 		"dev": "vite dev",
-		"prebuild":"npm run compile",
+		"prebuild": "npm run compile",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -20,7 +20,7 @@
 		"peggy": "^4.2.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
-		"typescript": "^5.0.0",
+		"typescript": "^5.7.2",
 		"vite": "^6.0.0"
 	},
 	"dependencies": {

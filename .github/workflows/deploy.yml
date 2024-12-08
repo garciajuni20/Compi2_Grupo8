@@ -1,0 +1,53 @@
+name: Pasos de GitActions
+
+on:
+  push:
+    branches: "main"
+
+jobs:
+  Compilar_Gramatica:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./buildsvelte
+    steps:
+      - name: Ultimos Cambios
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ./buildsvelte/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: build
+        env:
+          BASE_PATH: "/${{ github.event.repository.name }}"
+        run: |
+          npm run build
+
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "buildsvelte/build/"
+
+  Subir_Pagina:
+    needs: Compilar_Gramatica
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

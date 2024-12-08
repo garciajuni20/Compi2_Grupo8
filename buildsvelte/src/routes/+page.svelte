@@ -15,7 +15,7 @@
   style="height: 100vh;"
 >
   <div
-    class="d-flex justify-content-center rounded align-items-center flex-column col-5 m-4 bg-light border border-secondary-subtle"
+    class="d-flex justify-content-center rounded align-items-center flex-column col-5 m-4 overflow-x-auto bg-light border border-secondary-subtle"
     style="height: 80vh;"
   >
     <div class="w-100" style="height: 75vh;">

@@ -33,7 +33,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "buildsvelte/build/"
+          path: ".svelte-kit/output"
 
   Subir_Pagina:
     needs: Compilar_Gramatica
@@ -42,10 +42,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Deploy

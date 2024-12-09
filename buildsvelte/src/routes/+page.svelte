@@ -26,7 +26,7 @@
         display: flex;
         flex-direction: column;
         height: 100vh;
-        overflow: hidden;
+        overflow: auto;
         background-color: rgb(13, 17, 23);
         font-family: Arial, sans-serif;
         font-size: 11pt;

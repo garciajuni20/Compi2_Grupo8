@@ -29,10 +29,10 @@
         <button class="boton" on:click={parse}>Analizar</button>
       </div>
       <div class="columnas">
-        <div class="codearea">
+        <div class="codearea overflow-y-auto">
           <CodeMirror bind:value={editor} {extensions} />
         </div>
-        <div class="codearea">
+        <div class="codearea overflow-y-auto">
           <p>{textoResultado}</p>
         </div>
       </div>
@@ -53,7 +53,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    overflow: hidden;
+    overflow: auto;
     background-color: rgb(13, 17, 23);
     font-family: Arial, sans-serif;
     font-size: 11pt;
@@ -87,7 +87,7 @@
     padding: 0.5rem;
     font-size: 11pt;
     height: 100%;
-    overflow-y: auto;
+    overflow: auto;
     border-radius: 5px;
     background-color: rgb(40, 44, 52);
     font-family: "Consolas";

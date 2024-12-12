@@ -27,8 +27,9 @@ instances
     = "*" { return "*"; }
     / "+" { return "+"; }
     / "?" { return "?"; }
-    / "|" range "|" { return text(); }
-range
+    / "|" repetition_range "|" { return text(); }
+
+repetition_range
     = min:number ".." max:number? { return { min, max }; }
     / ".." max:number { return { min: 0, max }; }
     / min:number ".." { return { min, max: Infinity }; }
@@ -43,7 +44,7 @@ group
     / "[" whitespace alternative whitespace "]" { return text(); }
 
 // Rango de caracteres o conjunto dentro de clases.
-range
+character_range
     = [^[\]-] "-" [^[\]-] { return text(); }
     / [^[\]]+ { return text(); }
 

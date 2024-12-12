@@ -1,70 +1,85 @@
+// Define el inicio de la gramática.
 start
-    // Define el inicio de la gramática.
-    = (rule (whitespace ";"? whitespace rule)* ";"? whitespace)* !. { return "Gramatica Aceptada"; }
+    = (rule (whitespace ";"? whitespace rule)* whitespace "!"?) { return "Gramatica Aceptada"; }
 
+// Identificadores válidos.
 identifier
-    // Define un identificador válido.
     = [_a-zA-Z][_a-zA-Z0-9]* { return text(); }
 
+// Literales de texto, sensibles o no a mayúsculas.
 text
-    // Define cadenas de texto entre comillas simples o dobles, opcionalmente insensibles a mayúsculas/minúsculas.
-    = '"' [^"]* '"' [i]? { return text(); }
-    / "'" [^']* "'" [i]? { return text(); }
+    = '"' [^"]* '"' "i"? { return text(); }
+    / "'" [^']* "'" "i"? { return text(); }
 
+// Espacios en blanco y comentarios.
 whitespace
-    // Define espacios en blanco.
-    = [ \t\r\n]*
+    = ([ \t\r\n] / comment)*
+comment
+    = "//" [^\n]* \n
+    / "/*" [^]*? "*/"
 
+// Números enteros.
 number
-    // Define un número compuesto por dígitos.
     = [0-9]+ { return parseInt(text(), 10); }
 
+// Operadores de repetición y rangos.
 instances
-    // Define los operadores "*", "+", "?" y repeticiones específicas.
-    = "" { return ""; }
+    = "*" { return "*"; }
     / "+" { return "+"; }
     / "?" { return "?"; }
-    / "|" number ".." number? ","? whitespace* { return text(); }
-    / "|" number { return text(); }
-
-open_bracket
-    // Define el carácter "[".
-    = "[" { return "["; }
-
-close_bracket
-    // Define el carácter "]".
-    = "]" { return "]"; }
-
-class
-    // Define una clase de caracteres entre corchetes, incluyendo soporte para case-insensitive.
-    = "[" [^]]* "]" [i]? { return text(); }
-
+    / "|" range "|" { return text(); }
 range
-    // Define un rango de caracteres o un conjunto de caracteres.
+    = min:number ".." max:number? { return { min, max }; }
+    / ".." max:number { return { min: 0, max }; }
+    / min:number ".." { return { min, max: Infinity }; }
+
+// Clases de caracteres, sensibles o no a mayúsculas.
+class
+    = "[" [^\]]* "]" "i"? { return text(); }
+
+// Grupos de alternativas.
+group
+    = "(" whitespace alternative whitespace ")" { return text(); }
+    / "[" whitespace alternative whitespace "]" { return text(); }
+
+// Rango de caracteres o conjunto dentro de clases.
+range
     = [^[\]-] "-" [^[\]-] { return text(); }
     / [^[\]]+ { return text(); }
 
+// Reglas.
 rule
-    // Define una regla con un identificador, un "=" y alternativas de expresiones.
-    = identifier whitespace "=" whitespace alternative whitespace ";"? { return text(); }
+    = identifier whitespace "=" whitespace alternative whitespace { return text(); }
 
+// Alternativas separadas por "/".
 alternative
-    // Define una lista de expresiones separadas por "/".
     = expression_list (whitespace "/" whitespace expression_list)* { return text(); }
 
+// Lista de expresiones.
 expression_list
-    // Define una lista de expresiones opcionales.
     = expression whitespace instances? (whitespace expression whitespace instances?)* { return text(); }
 
+// Expresiones: literales, identificadores, grupos, clases, números o aserciones.
 expression
-    // Define una expresión que puede ser texto, identificador, grupo, clase o número.
     = text
     / identifier
     / group
     / class
     / number
+    / assertion
+assertion
+    = "&" expression { return { type: "positive", expression }; }
+    / "!" expression { return { type: "negative", expression }; }
 
-group
-    // Define un grupo de alternativas entre paréntesis o corchetes.
-    = "(" whitespace alternative whitespace ")" { return text(); }
-    / "[" whitespace alternative whitespace "]" { return text(); }
+// Etiquetas y operadores adicionales.
+labeled_expression
+    = label:identifier ":" expression { return { label, expression }; }
+    / "@" (label:identifier ":")? expression { return { pluck: true, label, expression }; }
+
+// Concatenación de expresiones.
+concatenation
+    = expression (whitespace expression)* { return text(); }
+
+// Expresiones con delimitadores.
+repetition_with_delimiter
+    = expression "|" min:number? ".." max:number? ("," delimiter:expression)? "|" { return { expression, min, max, delimiter }; }

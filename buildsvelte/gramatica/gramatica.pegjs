@@ -15,7 +15,7 @@ text
 whitespace
     = ([ \t\r\n] / comment)*
 comment
-    = "//" [^\n]* \n
+    = "//" [^\n]*
     / "/*" [^]*? "*/"
 
 // Números enteros.

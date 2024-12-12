@@ -48,9 +48,9 @@ character_range
     = [^[\]-] "-" [^[\]-] { return text(); }
     / [^[\]]+ { return text(); }
 
-// Reglas.
+// Reglas con etiquetas opcionales.
 rule
-    = identifier whitespace "=" whitespace alternative whitespace { return text(); }
+    = identifier whitespace ("\"" [^"]* "\"" whitespace)? "=" whitespace alternative whitespace { return text(); }
 
 // Alternativas separadas por "/".
 alternative

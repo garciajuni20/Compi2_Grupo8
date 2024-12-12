@@ -66,6 +66,5 @@ expression
 
 group
     // Define un grupo de alternativas entre paréntesis o corchetes.
-    = "[" whitespace alternative whitespace "-" whitespace alternative whitespace "]" { return text(); }
+    = "(" whitespace alternative whitespace ")" { return text(); }
     / "[" whitespace alternative whitespace "]" { return text(); }
-    / "(" whitespace alternative whitespace ")" { return text(); }
